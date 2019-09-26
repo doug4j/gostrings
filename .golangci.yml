@@ -1,0 +1,121 @@
+linters-settings:
+  govet:
+    check-shadowing: true
+    settings:
+      printf:
+        funcs:
+          - (github.com/golangci/golangci-lint/pkg/logutils.Log).Infof
+          - (github.com/golangci/golangci-lint/pkg/logutils.Log).Warnf
+          - (github.com/golangci/golangci-lint/pkg/logutils.Log).Errorf
+          - (github.com/golangci/golangci-lint/pkg/logutils.Log).Fatalf
+  golint:
+    min-confidence: 0
+  gocyclo:
+    min-complexity: 7
+  maligned:
+    suggest-new: true
+  dupl:
+    threshold: 100
+  goconst:
+    min-len: 2 
+    min-occurrences: 2
+  depguard:
+    list-type: blacklist
+    packages:
+      # logging is allowed only by logutils.Log, logrus
+      # is allowed to use only in logutils package
+      - github.com/sirupsen/logrus
+  misspell:
+    locale: US
+  lll:
+    line-length: 220
+  gofmt:
+    # simplify code: gofmt with `-s` option, true by default
+    simplify: false
+  # goimports:
+  #   local-prefixes: github.com/doug4j/OmniFocusTools
+  gocritic:
+    enabled-tags:
+      - performance
+      - style
+      - experimental
+    disabled-checks:
+      - hugeParam #remove this at some point by refactoring code
+      - octalLiteral #remove this at some point by refactoring code
+      - assignOp
+      - wrapperFunc
+      - commentedOutCode #remove this at some point by refactoring code
+  #   - dupImport # https://github.com/go-critic/go-critic/issues/845      
+linters:
+  # enable:
+  #   - megacheck
+  #   - govet
+  #   - unused
+  #   - deadcode
+  #   - varcheck
+  #   - ineffassign
+  #   - typecheck
+  #   - errcheck
+  #   - staticcheck
+  #   - gosimple
+  #   - structcheck
+  #   - stylecheck
+  #   - gosec
+  #   - interfacer
+  #   - unconvert
+  #   - dupl
+  #   - goconst
+  #   - gocyclo
+  #   - gofmt
+  #   - goimports
+  #   - depguard
+  #   - misspell
+  #   - unparam
+  #   - nakedret
+  #   - prealloc
+  #   - scopelint
+  #   - gocritic
+  #   - gochecknoinits
+  #   - gochecknoglobals
+  # enable-all: false
+  # disable:
+  #   - lll
+  #   - maligned
+  #   - prealloc
+  #   - golint
+  # disable-all: false
+  # presets:
+  #   - bugs
+  #   - unused
+  #   - format
+  #   - style
+  #   - complexity
+  #   - performance
+  # fast: false
+
+  enable-all: true
+  disable:
+    - maligned
+    - prealloc
+    # - gochecknoglobals
+    - goimports
+    - lll
+    - gofmt
+
+run:
+  skip-dirs:
+    - test/testdata_etc
+    - pkg/golinters/goanalysis/(checker|passes)
+
+issues:
+  exclude-rules:
+    - text: "weak cryptographic primitive"
+      linters:
+        - gosec
+
+# golangci.com configuration
+# https://github.com/golangci/golangci/wiki/Configuration
+service:
+  golangci-lint-version: 1.17.x # use the fixed version to not introduce new linters unexpectedly
+  prepare:
+    - echo "here I can run custom commands, but no preparation needed for this repo" 
